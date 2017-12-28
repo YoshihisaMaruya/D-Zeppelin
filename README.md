@@ -22,7 +22,7 @@ and R, node included
 3. Copy and Custom docker-compose.yml/conf/notebook for your enviroment
 ~~~~
 > cp _docker-compose.yml docker-compose.yml # Please custom options for your enviroment
-> cp -r dzeppelin/_conf dzeppelin/conf # Please add conf file such as hive-site.xml
+> cp -r dzeppelin/_myconf dzeppelin/myconf # Please add conf file such as hive-site.xml
 > cp -r dzeppelin/_conf dzeppelin/notebook # Add your note book
 ~~~~
 
