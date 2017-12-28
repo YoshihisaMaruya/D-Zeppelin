@@ -1,7 +1,7 @@
 # D-Zeppelin
 Docker image of Apache Zeppelin with Apache Spark and Python DeepNeuralNetwork Libs.
 
-It help to quick create data cleansing / machine learning / visualization environment.
+It help to quick creating environment of data cleansing / machine learning / visualization .
 
 # Base Image
 ubuntu:16.04
@@ -29,11 +29,12 @@ and R, node included
 4. Build Image and Up docker
 ~~~~
 > docker-compose up -d
-~~~
+~~~~
  
 # Links
 - [Zeppelin Doc](https://zeppelin.apache.org/docs/0.7.3/) 
 - [docker-spark](https://github.com/epahomov/docker-spark)
+
 # Todo
 - cude gpu support
  
