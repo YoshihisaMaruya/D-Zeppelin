@@ -1,7 +1,7 @@
 # D-Zeppelin
 Apache Zeppelin with Apache Spark + Python(Keras, TensorFlow) over Docker.
 
-Quickstart enviroment for data cleansing, collection, statistics, machine learning and visualization.
+Quickstart environment for data cleansing, collection, statistics, machine learning and visualization.
 
 # Base Image
 ubuntu:16.04
