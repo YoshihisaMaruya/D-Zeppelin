@@ -1,0 +1,20 @@
+dzeppelin:
+  image: dzeppelin
+  environment:
+    ZEPPELIN_PORT: 8080
+    ZEPPELIN_JAVA_OPTS: >-
+      -Dspark.driver.memory=1g
+      -Dspark.executor.memory=2g
+    MASTER: spark://sm:7077
+  ports:
+    - 8000:8080
+  volumes:
+    - ./dzeppelin/data:/zeppelin/data
+    - ./dzeppelin/notebook:/zeppelin/notebook
+    - ./dzeppelin/myconf:/zeppelin/myconf
+    - /etc/localtime:/etc/localtime:ro
+  cap_add: 
+    - NET_ADMIN
+  privileged: true
+  extra_hosts:
+    - "sm:192.168.0.1"
