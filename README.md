@@ -1,7 +1,7 @@
 # D-Zeppelin
-Docker image of Apache Zeppelin with Apache Spark and Python DeepNeuralNetwork Libs.
+Apache Zeppelin with Apache Spark + Python(Keras, TensorFlow) over Docker.
 
-It help to quick creating environment of data cleansing / machine learning / visualization .
+Quickstart Image for enviroment for data cleansing, collection, statistics, machine learning and visualization.
 
 # Base Image
 ubuntu:16.04
