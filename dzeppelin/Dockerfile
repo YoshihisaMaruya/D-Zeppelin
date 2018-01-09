@@ -11,19 +11,22 @@ ENV R_HOME /usr/lib/R
 
 ## Spark
 ARG MAJOR_HADOOP_VERSION="2.7"
-ARG SPARK_VERSION="v2.1.0"
-ENV SPARK_HOME /spark
+ARG SPARK_VERSION="v2.1.1"
+ENV SPARK_HOME /workspace/spark
 
 ## Zeppelin
 ARG ZEPPELIN_VERSION="v0.7.3"
-ARG ZEPPELIN_SPARK_VERSION="2.1"
-ARG ZEPPELIN_HADOOP_VERSION="2.7"
+ARG ZEPPELIN_SPARK_VERSION="2.1.1"
+ARG ZEPPELIN_HADOOP_VERSION="2.7.3"
 ARG ZEPPELIN_SCALA_VERSION="2.11"
 ENV ZEPPELIN_PORT 8080
-ENV ZEPPELIN_HOME /zeppelin
+ENV ZEPPELIN_HOME /workspace/zeppelin
 ENV ZEPPELIN_CONF_DIR $ZEPPELIN_HOME/conf
 ENV ZEPPELIN_NOTEBOOK_DIR $ZEPPELIN_HOME/notebook
 ENV ZEPPELIN_INTP_CLASSPATH_OVERRIDES $ZEPPELIN_HOME/myconf
+
+RUN mkdir /workspace
+WORKDIR /workspace
 
 # Change Timezon
 RUN echo "Asia/Tokyo" > /etc/timezone
@@ -38,7 +41,7 @@ RUN \
   apt-get install -y byobu curl git htop man unzip nano wget && \
   rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get -y install libncursesw5-dev libgdbm-dev libc6-dev zlib1g-dev libsqlite3-dev tk-dev libssl-dev openssl libbz2-dev libreadline-dev
-RUN apt-get update && apt-get install -y apt-file libfontconfig npm maven apt-transport-https
+RUN apt-get update && apt-get install -y apt-file libfontconfig npm maven apt-transport-https vim mysql-client
 RUN apt-file update
 
 # Install Java
@@ -86,15 +89,19 @@ RUN R -e "install.packages('RJDBC', repos = 'http://cran.us.r-project.org')"
 
 
 # Install spark
-RUN git clone  --depth 1 --branch ${SPARK_VERSION} https://github.com/apache/spark.git
+#RUN git clone  --depth 1 --branch ${SPARK_VERSION} https://github.com/apache/spark.git
+#WORKDIR /workspace/spark
+#ENV MAVEN_OPTS "-Xmx2g -XX:ReservedCodeCacheSize=512m"
+#RUN ./build/mvn -Pyarn -Psparkr -Pmesos -Phive -Phive-thriftserver -Phadoop-${MAJOR_HADOOP_VERSION} -Dhadoop.version=${MAJOR_HADOOP_VERSION}.0 -DskipTests clean package
 
-WORKDIR spark
-
-ENV MAVEN_OPTS "-Xmx2g -XX:ReservedCodeCacheSize=512m"
-RUN ./build/mvn -Pyarn -Psparkr -Pmesos -Phive -Phive-thriftserver -Phadoop-${MAJOR_HADOOP_VERSION} -Dhadoop.version=${MAJOR_HADOOP_VERSION}.0 -DskipTests clean package
+RUN wget https://archive.apache.org/dist/spark/spark-2.1.1/spark-2.1.1-bin-hadoop2.7.tgz && \
+    tar xvf spark-2.1.1-bin-hadoop2.7.tgz && \
+    mv spark-2.1.1-bin-hadoop2.7 spark && \
+    apt-get -y install libmysql-java && \
+    cp /usr/share/java/mysql-connector-java.jar /workspace/spark/jars/
 
 # Install Zeppelin
-WORKDIR /
+WORKDIR /workspace
 # the bower cannot execute at root user. stupid.
 RUN git clone --depth 1 --branch ${ZEPPELIN_VERSION} https://github.com/apache/zeppelin.git && \
 	cd zeppelin && \
@@ -102,4 +109,6 @@ RUN git clone --depth 1 --branch ${ZEPPELIN_VERSION} https://github.com/apache/z
 	dev/change_scala_version.sh ${ZEPPELIN_SCALA_VERSION} && \
 	mvn clean package -DskipTests -Pspark-${ZEPPELIN_SPARK_VERSION} -Phadoop-${ZEPPELIN_HADOOP_VERSION} -Pyarn -Ppyspark -Psparkr -Pr -Pscala-${ZEPPELIN_SCALA_VERSION}
 
-CMD ["/zeppelin/bin/zeppelin.sh","start"]
+expose 4040
+
+CMD ["/workspace/zeppelin/bin/zeppelin.sh","start"]
