@@ -1,20 +1,17 @@
 dzeppelin:
-  image: dzeppelin
+  build: ./dzeppelin
   environment:
     ZEPPELIN_PORT: 8080
     ZEPPELIN_JAVA_OPTS: >-
       -Dspark.driver.memory=1g
       -Dspark.executor.memory=2g
-    MASTER: spark://sm:7077
+    MASTER: spark://192.168.0.70:7077
   ports:
     - 8000:8080
   volumes:
-    - ./dzeppelin/data:/zeppelin/data
-    - ./dzeppelin/notebook:/zeppelin/notebook
-    - ./dzeppelin/myconf:/zeppelin/myconf
+    - ./dzeppelin/data:/workspace/zeppelin/data
+    - ./dzeppelin/notebook:/workspace/zeppelin/notebook
     - /etc/localtime:/etc/localtime:ro
-  cap_add: 
-    - NET_ADMIN
-  privileged: true
+    - /home/demo/workspace/spark-2.1.1-bin-hadoop2.7/conf/:/workspace/spark/conf
   extra_hosts:
-    - "sm:192.168.0.1"
+    - "hp3:192.168.0.70"
